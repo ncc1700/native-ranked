@@ -15,7 +15,7 @@
 #include <stdio.h>
 #define safe_sprintf sprintf_s
 #include <raylib/raylib_win32.h>
-#include <Windows.h>
+#include <windows.h>
 #define REST() Sleep(100)
 #else
 #include <unistd.h>
