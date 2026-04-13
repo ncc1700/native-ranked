@@ -1,0 +1,5 @@
+.xmake/
+build/
+ranked
+ranked.exe
+head.png

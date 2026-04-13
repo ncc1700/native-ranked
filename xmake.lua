@@ -1,0 +1,26 @@
+target("linux")
+    set_targetdir(".")
+    set_filename("ranked")
+    add_includedirs("includes")
+    add_files("src/*.c", "src/**/*.c")
+    add_linkdirs("lib/linux")
+    add_syslinks("curl")
+    add_links("raylib")
+
+target("win64")
+    set_toolchains("mingw64")
+    set_targetdir(".")
+    set_filename("ranked.exe")
+    add_includedirs("includes")
+    add_files("src/*.c", "src/**/*.c")
+    add_linkdirs("lib/mingw64")
+    add_links("raylibdll", "raylib")
+    add_syslinks("winhttp")
+
+
+
+toolchain("mingw64")
+    set_toolset("cc", "x86_64-w64-mingw32-cc")
+    set_toolset("cxx", "x86_64-w64-mingw32-c++")
+    set_toolset("ld", "x86_64-w64-mingw32-gcc")
+toolchain_end()
