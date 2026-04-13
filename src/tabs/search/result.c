@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <nranked.h>
 #include <string.h>
+#include <messagebox.h>
 
 static char* list[AMOUNT_OF_GAMEMODES];
 static bool init = false;
@@ -20,12 +21,11 @@ static inline void SetupList(){
         PlayerGMData* data = GetGameModeFromIndex(i);
         int gameModeLen = strlen(data->gameMode) + 1;
         int currentRank = strlen(data->currentRank) + 1;
-        int length = gameModeLen + currentRank + 1;
+        int length = gameModeLen + currentRank + 4;
         list[i] = calloc(length, sizeof(char));
         safe_sprintf(list[i], length, "%s - %s", data->gameMode, data->currentRank);
     }
 }
-
 
 
 static inline void FreeList(){
@@ -55,9 +55,10 @@ void DrawResult(){
     RGUIDrawText(nameLoc, name, 30);
     int button = RGUIDrawButton(exitButtonLoc, "Exit");
     
-    int result = RGUIListView(resultListLoc, list, 9, &scrollIndex, &active, &focus);
+    int result = RGUIListView(resultListLoc, list, amount, &scrollIndex, &active, &focus);
     
     if(button == 1){
+        SendMessage("TestTestTestTestTestTestTest\nTestTestTestTestTestTest");
         init = false;
         FreeList();
         SetSearchState(SSTATE_SEARCH);

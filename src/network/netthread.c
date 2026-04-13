@@ -6,22 +6,26 @@
 #include <network/mcapi.h>
 #include <network/rankedapi.h>
 #include <tabs/search/searchstate.h>
+#include <messagebox.h>
 
 static void SearchThreadEntry(void* args){
     char* username = (char*)args;
     printf("Starting Search....\n", username);
-    // 32 + 4 just in case they decide to add dashes for some reason
     char uuid[33];
     MCAPIError result = GetUserUUID(username, uuid, 33);
     if(result != MCAPI_SUCCESS){
+        SendMessage("Couldn't get UUID from Mojang!");
         DEBUG_FAIL("GetUserUUID returned result %d\n", result);
+        SetSearchState(SSTATE_SEARCH);
         goto EXIT;
     }
     DEBUG_PASS("UUID of %s is %s\n", username, uuid);
 
     result = SaveUserHead(username, "head.png");
     if(result != MCAPI_SUCCESS){
+        SendMessage("Couldn't get player head!");
         DEBUG_FAIL("SaveUserHead returned result %d\n", result);
+        SetSearchState(SSTATE_SEARCH);
         goto EXIT;
     }
     char fullUuid[37] = "";
@@ -29,7 +33,9 @@ static void SearchThreadEntry(void* args){
     DEBUG_PASS("FULL: %s\n", fullUuid);
     RankedAPIError rresult = FillRankedData(fullUuid);
     if(rresult != RAPI_SUCCESS){
+        SendMessage("Couldn't get player! Is the username correct?");
         DEBUG_FAIL("FillRankedData returned result %d\n", rresult);
+        SetSearchState(SSTATE_SEARCH);
         goto EXIT;
     }
     SetSearchState(SSTATE_RESULT);

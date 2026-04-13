@@ -3,7 +3,7 @@
 #include <tabs/search/searchstate.h>
 #include <naett/naett.h>
 
-
+#include <messagebox.h>
 
 
 
@@ -18,9 +18,9 @@ int main(){
 
     while(!WindowShouldClose()){
         BeginDrawing();
-
         ClearBackground(RGUIGetBackgroundColor());
         HandleSearch();
+        HandleMessages();
         EndDrawing();
     }
 

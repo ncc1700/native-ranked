@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <yyjson/yyjson.h>
 #include <string.h>
+
 // a massive mess =(
 
 
@@ -19,8 +20,8 @@ RankedAPIError FillRankedData(const char* uuid){
     safe_sprintf(currentUserName, USERNAME_SIZE, "");
 
     for(int i = 0; i < AMOUNT_OF_GAMEMODES; i++){
-        safe_sprintf(gmData[i].currentRank, CURRENTRANK_STR_SIZE, "");
-        safe_sprintf(gmData[i].gameMode, GAMEMODE_STR_SIZE, "");
+        safe_sprintf(gmData[i].currentRank, CURRENTRANK_STR_SIZE, "???");
+        safe_sprintf(gmData[i].gameMode, GAMEMODE_STR_SIZE, "???");
         gmData[i].totalRating = 0;
         gmData[i].wins = 0;
         gmData[i].losses = 0;
@@ -80,60 +81,41 @@ RankedAPIError FillRankedData(const char* uuid){
         const char* name = yyjson_get_str(gmName);
 
         yyjson_val* totalRatingVal = yyjson_obj_get(gm, "totalRating");
-        if(totalRatingVal == NULL){
-            DEBUG_FAIL("totalRating doesn't exist");
-            result = RAPI_USERNAME_NOT_FOUND;
-            goto EXIT2;
-        }
-        int totalRating = yyjson_get_int(totalRatingVal);
+        int totalRating = 0;
+        if(totalRatingVal == NULL) totalRating = 0;
+        else totalRating = yyjson_get_int(totalRatingVal);
 
         yyjson_val* winsVal = yyjson_obj_get(gm, "wins");
-        if(winsVal == NULL){
-            DEBUG_FAIL("wins doesn't exist");
-            result = RAPI_USERNAME_NOT_FOUND;
-            goto EXIT2;
-        }
-        int wins = yyjson_get_int(winsVal);
+        int wins = 0;
+        if(winsVal == NULL) wins = 0;
+        else wins = yyjson_get_int(winsVal);
 
         yyjson_val* lossVal = yyjson_obj_get(gm, "losses");
-        if(lossVal == NULL){
-            DEBUG_FAIL("losses doesn't exist");
-            result = RAPI_USERNAME_NOT_FOUND;
-            goto EXIT2;
-        }
-        int losses = yyjson_get_int(totalRatingVal);
+        int losses = 0;
+        if(lossVal == NULL) losses = 0;
+        else losses = yyjson_get_int(lossVal);
 
         yyjson_val* curStreakVal = yyjson_obj_get(gm, "currentStreak");
-        if(totalRatingVal == NULL){
-            DEBUG_FAIL("currentStreak doesn't exist");
-            result = RAPI_USERNAME_NOT_FOUND;
-            goto EXIT2;
-        }
-        int currentStreak = yyjson_get_int(curStreakVal);
+        int currentStreak = 0;
+        if(currentStreak == NULL) currentStreak = 0;
+        else currentStreak = yyjson_get_int(curStreakVal);
 
         yyjson_val* pMatchPlayedVal = yyjson_obj_get(gm, "placementMatchesPlayed");
-        if(pMatchPlayedVal == NULL){
-            DEBUG_FAIL("placementMatchesPlayed doesn't exist");
-            result = RAPI_USERNAME_NOT_FOUND;
-            goto EXIT2;
-        }
-        int pMatchPlayed = yyjson_get_int(pMatchPlayedVal);
+        int pMatchPlayed = 0;
+        if(pMatchPlayedVal == NULL) pMatchPlayed = 0;
+        else pMatchPlayed = yyjson_get_int(pMatchPlayedVal);
 
         yyjson_val* curRankVal = yyjson_obj_get(gm, "currentRank");
         if(curRankVal == NULL){
-            DEBUG_FAIL("currentRank doesn't exist");
-            result = RAPI_USERNAME_NOT_FOUND;
-            goto EXIT2;
+
+            continue;
         }
         const char* currentRank = yyjson_get_str(curRankVal);
 
         yyjson_val* posVal = yyjson_obj_get(gm, "position");
-        if(posVal == NULL){
-            DEBUG_FAIL("position doesn't exist");
-            result = RAPI_USERNAME_NOT_FOUND;
-            goto EXIT2;
-        }
-        int position = yyjson_get_int(posVal);
+        int position = 0;
+        if(posVal == NULL) position = 0;
+        else position = yyjson_get_int(posVal);
 
         safe_sprintf(gmData[idx].gameMode, GAMEMODE_STR_SIZE, "%s", name);
         safe_sprintf(gmData[idx].currentRank, CURRENTRANK_STR_SIZE, "%s", currentRank);
@@ -144,7 +126,7 @@ RankedAPIError FillRankedData(const char* uuid){
         gmData[idx].currentStreak = currentStreak;
         gmData[idx].pMatchPlayed = pMatchPlayed;
         gmData[idx].position = position;
-
+        gmData[idx].played = true;
         DEBUG_PASS("%s: (rank = %s, totalRating = %d)\n", gmData[idx].gameMode, gmData[idx].currentRank, gmData[idx].totalRating);
     }
     safe_sprintf(currentUserName, USERNAME_SIZE, "%s", yyjson_get_str(nameVal));

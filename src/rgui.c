@@ -25,6 +25,10 @@ Color RGUIGetBackgroundColor(){
     return GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
 }
 
+Color RGUIGetTextColor(){
+    return GetColor(GuiGetStyle(TEXT, TEXT_COLOR_NORMAL));
+}
+
 int RGUIDrawButton(Rectangle bounds, const char* text){
     return GuiButton(bounds, text);
 }
@@ -41,6 +45,11 @@ int RGUIDrawText(Vector2 position, const char* text, int fontSize){
 int RGUIMeasureTextWidth(const char *text, float fontSize){
     Vector2 size = MeasureTextEx(GuiGetFont(), text, fontSize, 1);  
     return size.x;
+}
+
+int RGUIMeasureTextHeight(const char *text, float fontSize){
+    Vector2 size = MeasureTextEx(GuiGetFont(), text, fontSize, 1);  
+    return size.y;
 }
 
 int RGUIListView(Rectangle bounds, char **text, int count, int *scrollIndex, int *active, int *focus){

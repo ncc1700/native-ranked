@@ -24,7 +24,7 @@ typedef enum _GameMode {
     DIAMONDSMP
 } GameMode;
 
-#define CURRENTRANK_STR_SIZE 20
+#define CURRENTRANK_STR_SIZE 30
 #define GAMEMODE_STR_SIZE 20
 
 typedef struct _PlayerGMData {
