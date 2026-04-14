@@ -16,7 +16,7 @@ static GlobalInfo gInfo;
 
 
 RankedAPIError FillRankedData(const char* uuid){
-    // clear the previous players data off memory
+    // clear the previous players data
     safe_sprintf(currentUserName, USERNAME_SIZE, "");
 
     for(int i = 0; i < AMOUNT_OF_GAMEMODES; i++){
