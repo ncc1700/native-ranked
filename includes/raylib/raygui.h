@@ -793,7 +793,7 @@ RAYGUIAPI int GuiSpinner(Rectangle bounds, const char *text, int *value, int min
 RAYGUIAPI int GuiValueBox(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode); // Value Box control, updates input text with numbers
 RAYGUIAPI int GuiValueBoxFloat(Rectangle bounds, const char *text, char *textValue, float *value, bool editMode); // Value box control for float values
 RAYGUIAPI int GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode);                   // Text Box control, updates input text
-
+RAYGUIAPI bool GuiTextBoxMulti(Rectangle bounds, char *text, int textSize, bool editMode);
 RAYGUIAPI int GuiSlider(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue); // Slider control
 RAYGUIAPI int GuiSliderBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue); // Slider Bar control
 RAYGUIAPI int GuiProgressBar(Rectangle bounds, const char *textLeft, const char *textRight, float *value, float minValue, float maxValue); // Progress Bar control
@@ -2966,7 +2966,7 @@ int GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode)
     return result;      // Mouse button pressed: result = 1
 }
 
-/*
+
 // Text Box control with multiple lines and word-wrap
 // NOTE: This text-box is readonly, no editing supported by default
 bool GuiTextBoxMulti(Rectangle bounds, char *text, int textSize, bool editMode)
@@ -2986,7 +2986,7 @@ bool GuiTextBoxMulti(Rectangle bounds, char *text, int textSize, bool editMode)
 
     return pressed;
 }
-*/
+
 
 // Spinner control, returns selected value
 int GuiSpinner(Rectangle bounds, const char *text, int *value, int minValue, int maxValue, bool editMode)

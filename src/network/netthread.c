@@ -14,7 +14,7 @@ static void SearchThreadEntry(void* args){
     char uuid[33];
     MCAPIError result = GetUserUUID(username, uuid, 33);
     if(result != MCAPI_SUCCESS){
-        SendMessage("Couldn't get UUID from Mojang!");
+        SendAppMessage("Couldn't get UUID from Mojang!");
         DEBUG_FAIL("GetUserUUID returned result %d\n", result);
         SetSearchState(SSTATE_SEARCH);
         goto EXIT;
@@ -23,7 +23,7 @@ static void SearchThreadEntry(void* args){
 
     result = SaveUserHead(username, "head.png");
     if(result != MCAPI_SUCCESS){
-        SendMessage("Couldn't get player head!");
+        SendAppMessage("Couldn't get player head!");
         DEBUG_FAIL("SaveUserHead returned result %d\n", result);
         SetSearchState(SSTATE_SEARCH);
         goto EXIT;
@@ -33,7 +33,7 @@ static void SearchThreadEntry(void* args){
     DEBUG_PASS("FULL: %s\n", fullUuid);
     RankedAPIError rresult = FillRankedData(fullUuid);
     if(rresult != RAPI_SUCCESS){
-        SendMessage("Couldn't get player! Is the username correct?");
+        SendAppMessage("Couldn't get player! Is the username correct?");
         DEBUG_FAIL("FillRankedData returned result %d\n", rresult);
         SetSearchState(SSTATE_SEARCH);
         goto EXIT;

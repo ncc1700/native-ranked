@@ -55,3 +55,7 @@ int RGUIMeasureTextHeight(const char *text, float fontSize){
 int RGUIListView(Rectangle bounds, char **text, int count, int *scrollIndex, int *active, int *focus){
     return GuiListViewEx(bounds, text, count, scrollIndex, active, focus); 
 }
+
+int RGUIReadBox(Rectangle bounds, const char *text){
+    return GuiTextBoxMulti(bounds, (char*)text, strlen(text), false);  // very risky, need to find a better solution
+}

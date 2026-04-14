@@ -27,7 +27,7 @@ static inline int GetNextIndex(){
     return result;
 }
 
-void SendMessage(const char* message){
+void SendAppMessage(const char* message){
     int index = GetNextIndex();
     DEBUG_INFO("Message index = %d\n", index);
     safe_sprintf(data[index].message, MESSAGE_SIZE, "%s", message);
@@ -40,7 +40,8 @@ void SendMessage(const char* message){
 void HandleMessages(){
     for(int i = 0; i < count; i++){
         if(data[i].isAnswered == true) continue;
-        // gotta unwind this rat nest later down the road
+        // gotta unwind this rat nest later down the road....
+        // I #love doing UI stuff while half sleepy
         Rectangle back = {((Width() - 100) + (i * 4) - data[i].width) / 2, 
             ((Height() - 40) + (i * 4) - data[i].height) / 2 - 50,
             100 + data[i].width, 40 + data[i].height + 50};
@@ -50,7 +51,7 @@ void HandleMessages(){
         Vector2 position = {(((Width() - 100) + (i * 4) - data[i].width) / 2) + 10, 
                             (((Height() - 60) + (i * 4) - data[i].height) / 2 - 50) + 20};
         Rectangle exitPos = {(front.x + front.width) - 90, (front.y + front.height) - 40, 80, 30};
-        DrawRectangleRec(back, RED);  
+        DrawRectangleRec(back, RGUIGetTextColor());  
         DrawRectangleRec(front, RGUIGetBackgroundColor());  
         RGUIDrawText(position, data[i].message, 20);
         int res = RGUIDrawButton(exitPos, "Ok");

@@ -12,7 +12,7 @@
 
 int main(){
     naettInit(NULL);
-    SetTargetFPS(30);
+    SetTargetFPS(60);
     InitWindow(800, 600, "Hello!");
     RGUIInit("resources/theme/default.rgs");
 

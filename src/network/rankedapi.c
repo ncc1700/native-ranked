@@ -12,7 +12,7 @@
 static char currentUserName[USERNAME_SIZE];
 static PlayerGMData gmData[AMOUNT_OF_GAMEMODES];
 static int idx = 0;
-
+static GlobalInfo gInfo;
 
 
 RankedAPIError FillRankedData(const char* uuid){
@@ -60,6 +60,14 @@ RankedAPIError FillRankedData(const char* uuid){
         result = RAPI_USERNAME_NOT_FOUND;
         goto EXIT2;
     }
+    yyjson_val* globalEloVal = yyjson_obj_get(root, "globalElo");
+    if(globalEloVal == NULL) gInfo.globalElo = 0;
+    else gInfo.globalElo = yyjson_get_int(globalEloVal);
+
+    yyjson_val* globalPosVal = yyjson_obj_get(root, "globalPosition");
+    if(globalPosVal == NULL) gInfo.globalPos = 0;
+    else gInfo.globalPos = yyjson_get_int(globalPosVal);
+
     yyjson_val* rankingsVal = yyjson_obj_get(root, "perLadder");
     if(rankingsVal == NULL){
         DEBUG_FAIL("couldn't find rankings\n");
@@ -97,7 +105,7 @@ RankedAPIError FillRankedData(const char* uuid){
 
         yyjson_val* curStreakVal = yyjson_obj_get(gm, "currentStreak");
         int currentStreak = 0;
-        if(currentStreak == NULL) currentStreak = 0;
+        if(curStreakVal == NULL) currentStreak = 0;
         else currentStreak = yyjson_get_int(curStreakVal);
 
         yyjson_val* pMatchPlayedVal = yyjson_obj_get(gm, "placementMatchesPlayed");
@@ -106,11 +114,9 @@ RankedAPIError FillRankedData(const char* uuid){
         else pMatchPlayed = yyjson_get_int(pMatchPlayedVal);
 
         yyjson_val* curRankVal = yyjson_obj_get(gm, "currentRank");
-        if(curRankVal == NULL){
-
-            continue;
-        }
-        const char* currentRank = yyjson_get_str(curRankVal);
+        char currentRank[30];
+        if(curRankVal == NULL) safe_sprintf(currentRank, 30, "UNKNOWN");
+        else safe_sprintf(currentRank, 30, "%s", yyjson_get_str(curRankVal));
 
         yyjson_val* posVal = yyjson_obj_get(gm, "position");
         int position = 0;
@@ -142,6 +148,10 @@ EXIT1:
 PlayerGMData* GetGameModeFromIndex(int i){
     if(i >= 9 || i < 0) return NULL;
     return &gmData[i];
+}
+
+GlobalInfo* GetGlobalInfo(){
+    return &gInfo;
 }
 
 const char* GetUsernameFromSearch(){

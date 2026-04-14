@@ -45,9 +45,14 @@ typedef enum _RankedAPIError {
     RAPI_INVALID_RESPONSE
 } RankedAPIError;
 
+typedef struct _GlobalInfo {
+    uint32_t globalElo;
+    uint32_t globalPos;
+} GlobalInfo;
 
 RankedAPIError FillRankedData(const char* uuid);
 PlayerGMData* GetGameModeFromIndex(int i);
+GlobalInfo* GetGlobalInfo();
 const char* GetUsernameFromSearch();
 int GetAmountFromSearch();
 

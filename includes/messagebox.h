@@ -17,7 +17,7 @@
 
 
 
-void SendMessage(const char* message);
+void SendAppMessage(const char* message);
 void HandleMessages();
 
 

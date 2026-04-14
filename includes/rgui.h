@@ -18,6 +18,6 @@ int RGUIDrawText(Vector2 position, const char* text, int fontSize);
 int RGUIMeasureTextWidth(const char *text, float fontSize);
 int RGUIMeasureTextHeight(const char *text, float fontSize);
 int RGUIListView(Rectangle bounds, char **text, int count, int *scrollIndex, int *active, int *focus);
-
+int RGUIReadBox(Rectangle bounds, const char *text);
 
 #endif

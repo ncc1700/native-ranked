@@ -14,23 +14,20 @@ static int amount = 0;
 static int scrollIndex = 0;
 static int active = 0;
 static int focus = 0;
+static int state = 0;
+
 
 static inline void SetupList(){
     amount = GetAmountFromSearch();
     for(int i = 0; i < amount; i++){
         PlayerGMData* data = GetGameModeFromIndex(i);
-        int gameModeLen = strlen(data->gameMode) + 1;
-        int currentRank = strlen(data->currentRank) + 1;
-        int length = gameModeLen + currentRank + 4;
-        list[i] = calloc(length, sizeof(char));
-        safe_sprintf(list[i], length, "%s - %s", data->gameMode, data->currentRank);
+        list[i] = data->gameMode;
     }
 }
 
 
 static inline void FreeList(){
     for(int i = 0; i < amount; i++){ 
-        free(list[i]);
         list[i] = NULL;
     }
 }
@@ -48,19 +45,53 @@ void DrawResult(){
     const char* name = GetUsernameFromSearch();
     int nameLen = RGUIMeasureTextWidth(name, 40);
     Vector2 nameLoc = {(Width() - nameLen) / 2, 30};
-    Vector2 textLoc = {(Width() - (nameLen * 2)) / 2, 25};
-    Rectangle exitButtonLoc = {10, 10, 90, 40};
-    Rectangle resultListLoc = {10, 90, Width() - 20, Height() - 100};
-    DrawTextureEx(text, textLoc, 0, 0.3, WHITE);
+    Vector2 globLoc = {10 , 80};
+    Vector2 textLoc = {(Width() - 100), 10};
+    DrawTextureEx(text, textLoc, 0, 0.4, WHITE);
     RGUIDrawText(nameLoc, name, 30);
-    int button = RGUIDrawButton(exitButtonLoc, "Exit");
-    
-    int result = RGUIListView(resultListLoc, list, amount, &scrollIndex, &active, &focus);
-    
-    if(button == 1){
-        SendMessage("TestTestTestTestTestTestTest\nTestTestTestTestTestTest");
-        init = false;
-        FreeList();
-        SetSearchState(SSTATE_SEARCH);
+    GlobalInfo* gInfo = GetGlobalInfo();
+    char gInfoBuffer[100];
+    safe_sprintf(gInfoBuffer, 100, "Global Elo: %d (#%d)", gInfo->globalElo, gInfo->globalPos);
+    RGUIDrawText(globLoc, gInfoBuffer, 30);
+    if(state == 0){
+        Rectangle exitButtonLoc = {10, 10, 90, 40};
+        Rectangle resultListLoc = {10, 130, Width() - 20, Height() - 160};
+        int button = RGUIDrawButton(exitButtonLoc, "Exit");
+        
+        int result = RGUIListView(resultListLoc, list, amount, &scrollIndex, &active, &focus);
+
+        if(CheckCollisionPointRec(GetMousePosition(), resultListLoc) == true){
+            if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+                state = 1;
+            }   
+            DEBUG_INFO("%d - %d\n", active, focus);
+        }
+        if(button == 1){
+            init = false;
+            FreeList();
+            SetSearchState(SSTATE_SEARCH);
+            UnloadTexture(text);
+        }
+
+    } else {
+        // takes a hit on perf, TODO: try to optimize (maybe don't do sprintf every frame? kind of stupid?)
+        Rectangle exitButtonLoc = {10, 10, 90, 40};
+        Rectangle resultListLoc = {10, 130, Width() - 20, Height() - 160};
+        Vector2 resultLoc = {10, 90};
+        int button = RGUIDrawButton(exitButtonLoc, "Go Back");
+        PlayerGMData* data = GetGameModeFromIndex(focus);
+        char buffer[255];
+
+        safe_sprintf(buffer, 255, 
+            "%s\n\nRank: %s\nTotal Rating: %d\nWins: %d\nLosses: %d\nCurrent Streak: %d\nPosition: %d\n",
+            data->gameMode, data->currentRank, data->totalRating, data->wins,
+            data->losses, data->currentStreak, data->pMatchPlayed, data->position);
+        
+        RGUIReadBox(resultListLoc, buffer);
+
+        if(button == 1){
+            state = 0;
+        }
     }
+    
 }
