@@ -12,8 +12,10 @@
 
 int main(){
     naettInit(NULL);
+    SetTraceLogLevel(LOG_ERROR);
+    //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(60);
-    InitWindow(800, 600, "Hello!");
+    InitWindow(700, 700, "Hello!");
     RGUIInit("resources/theme/default.rgs");
 
     while(!WindowShouldClose()){
