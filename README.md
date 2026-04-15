@@ -1,7 +1,7 @@
 # Native-Ranked
 
 
-This is the successor of the old and dead Native MCTiers app, as I lost hope with mctiers
+This is the successor of the old and dead Native MCTiers app
 
 Its still in Alpha so its not really finished yet
 

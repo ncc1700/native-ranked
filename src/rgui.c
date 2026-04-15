@@ -19,6 +19,9 @@ void RGUIInit(const char* path){
     GuiLoadStyle(path);
     GuiSetStyle(LISTVIEW, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
     GuiSetStyle(LISTVIEW, TEXT_SIZE, 25);
+
+    //GuiSetStyle(DEFAULT, TEXT_SIZE, 25);
+    //GuiSetStyle(TEXTBOX, TEXT_SIZE, 5);
 }
 
 Color RGUIGetBackgroundColor(){

@@ -61,7 +61,7 @@ void DrawResult(){
         int result = RGUIListView(resultListLoc, list, amount, &scrollIndex, &active, &focus);
 
         if(CheckCollisionPointRec(GetMousePosition(), resultListLoc) == true){
-            if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+            if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) && focus != -1){
                 state = 1;
             }   
             DEBUG_INFO("%d - %d\n", active, focus);
@@ -79,6 +79,9 @@ void DrawResult(){
         Rectangle resultListLoc = {10, 130, Width() - 20, Height() - 160};
         Vector2 resultLoc = {10, 90};
         int button = RGUIDrawButton(exitButtonLoc, "Go Back");
+        if(focus < 0 || focus >= amount){
+            focus = 0;
+        }
         PlayerGMData* data = GetGameModeFromIndex(focus);
         char buffer[255];
 
@@ -93,5 +96,4 @@ void DrawResult(){
             state = 0;
         }
     }
-    
 }
