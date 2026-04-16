@@ -3,10 +3,10 @@
 
 
 static char* animation[] = {
-    "///",
-    "|||",
-    "\\\\\\",
-    "|||"
+    "Ooo",
+    "oOo",
+    "ooO",
+    "oOo"
 };
 
 static int curAnim = 0;

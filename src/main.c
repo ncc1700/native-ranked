@@ -16,7 +16,7 @@ int main(){
     //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(60);
     InitWindow(700, 700, "Hello!");
-    RGUIInit("resources/theme/default.rgs");
+    RGUIInit("resources/theme/jungle.rgs");
 
     while(!WindowShouldClose()){
         BeginDrawing();

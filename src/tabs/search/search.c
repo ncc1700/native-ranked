@@ -2,9 +2,10 @@
 #include <rgui.h>
 #include <network/netthread.h>
 #include <tabs/search/searchstate.h>
-
+#include <messagebox.h>
+#include <string.h>
 // more global state, yay =(
-static char searchBuffer[16];
+static char searchBuffer[16] = {'\0'};
 
 void DrawSearch(){
     const char greetingText[] = "Search for a player";
@@ -18,7 +19,19 @@ void DrawSearch(){
     RGUITextBox(textBoxBounds, searchBuffer, 16, true);
     int enterButton = RGUIDrawButton(enterButtonBounds, buttonText);
     if(enterButton == 1){
-        SetSearchState(SSTATE_LOADING);
-        StartNetSearchThread(searchBuffer);
+        int offset = 'a' - 'A';
+        for(int i = 0; i < 16; i++){
+            if(searchBuffer[i] >= 'A' && searchBuffer[i] <= 'Z'){
+                searchBuffer[i] += offset;
+            }
+        }
+        DEBUG_INFO("Starting search for %s\n", searchBuffer);
+        if(strcmp(searchBuffer, "aximity") == 0){
+            SendAppMessage("nah");
+        } else {
+            SetSearchState(SSTATE_LOADING);
+            StartNetSearchThread(searchBuffer);
+        }   
+        
     }
 }

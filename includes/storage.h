@@ -17,21 +17,24 @@
 #define CURRENTRANK_STR_SIZE 30
 #define GAMEMODE_STR_SIZE 20
 
+// big struct
+// yes also ik 64bits is a bit much but
+// idk
 typedef struct _PlayerGMData {
     char gameMode[GAMEMODE_STR_SIZE];
     char currentRank[CURRENTRANK_STR_SIZE];
-    uint32_t totalRating;
-    uint32_t wins;
-    uint32_t losses;
-    int32_t currentStreak;
-    uint32_t pMatchPlayed;
-    uint32_t position;
+    int64_t totalRating;
+    int64_t wins;
+    int64_t losses;
+    int64_t currentStreak;
+    int64_t pMatchPlayed;
+    int64_t position;
     bool played;
 } PlayerGMData;
 
 typedef struct _GlobalInfo {
-    uint32_t globalElo;
-    uint32_t globalPos;
+    int64_t globalElo;
+    int64_t globalPos;
 } GlobalInfo;
 
 

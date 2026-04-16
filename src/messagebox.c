@@ -20,7 +20,7 @@ static inline int GetNextIndex(){
         if(data[i].isAnswered == true) return i;
     }
     if(count >= MESSAGE_AMOUNT){
-        return count; // remove the latest message and reuse that. Yeah a bad idea i know
+        return -1; // remove the latest message and reuse that. Yeah a bad idea i know
     }
     int result = count;
     count++;
@@ -29,6 +29,7 @@ static inline int GetNextIndex(){
 
 void SendAppMessage(const char* message){
     int index = GetNextIndex();
+    if(index == -1) return;
     DEBUG_INFO("Message index = %d\n", index);
     safe_sprintf(data[index].message, MESSAGE_SIZE, "%s", message);
     data[index].width = RGUIMeasureTextWidth(message, 20);

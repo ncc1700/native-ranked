@@ -49,11 +49,12 @@ void DrawResult(){
     Vector2 textLoc = {(Width() - 100), 10};
     DrawTextureEx(text, textLoc, 0, 0.4, WHITE);
     RGUIDrawText(nameLoc, name, 30);
-    GlobalInfo* gInfo = GetGlobalInfo();
-    char gInfoBuffer[100];
-    safe_sprintf(gInfoBuffer, 100, "Global Elo: %d (#%d)", gInfo->globalElo, gInfo->globalPos);
-    RGUIDrawText(globLoc, gInfoBuffer, 30);
+    
     if(state == 0){
+        GlobalInfo* gInfo = GetGlobalInfo();
+        char gInfoBuffer[100];
+        safe_sprintf(gInfoBuffer, 100, "Global Elo: %d (#%d)", gInfo->globalElo, gInfo->globalPos);
+        RGUIDrawText(globLoc, gInfoBuffer, 30);
         Rectangle exitButtonLoc = {10, 10, 90, 40};
         Rectangle resultListLoc = {10, 130, Width() - 20, Height() - 160};
         int button = RGUIDrawButton(exitButtonLoc, "Exit");
@@ -64,7 +65,6 @@ void DrawResult(){
             if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) && focus != -1){
                 state = 1;
             }   
-            DEBUG_INFO("%d - %d\n", active, focus);
         }
         if(button == 1){
             init = false;
@@ -74,6 +74,9 @@ void DrawResult(){
         }
 
     } else {
+        int tierScrollIndex = -1;
+        int tierActive = -1;
+        int tierFocus = -1;
         // takes a hit on perf, TODO: try to optimize (maybe don't do sprintf every frame? kind of stupid?)
         Rectangle exitButtonLoc = {10, 10, 90, 40};
         Rectangle resultListLoc = {10, 130, Width() - 20, Height() - 160};
@@ -83,14 +86,29 @@ void DrawResult(){
             focus = 0;
         }
         PlayerGMData* data = GetGameModeFromIndex(focus);
-        char buffer[255];
-
-        safe_sprintf(buffer, 255, 
-            "%s\n\nRank: %s\nTotal Rating: %d\nWins: %d\nLosses: %d\nCurrent Streak: %d\nPosition: %d\n",
-            data->gameMode, data->currentRank, data->totalRating, data->wins,
-            data->losses, data->currentStreak, data->pMatchPlayed, data->position);
+        char rank[50];
+        if(data->currentRank != NULL) safe_sprintf(rank, 50, "Rank: %s", data->currentRank);
+        else safe_sprintf(rank, 50, "Rank: UNSUPPORTED");
+        char rating[50];
+        if(data->totalRating >= 0) safe_sprintf(rating, 50, "Rating: %d", data->totalRating);
+        else safe_sprintf(rating, 50, "Rating: UNSUPPORTED");
+        char wins[25];
+        if(data->wins >= 0) safe_sprintf(wins, 25, "Wins: %d", data->wins);
+        else safe_sprintf(wins, 25, "Wins: UNSUPPORTED");
+        char losses[25];
+        if(data->losses >= 0) safe_sprintf(losses, 25, "Losses: %d", data->losses);
+        else safe_sprintf(losses, 25, "Losses: UNSUPPORTED");
+        char streak[50];
+        if(data->currentStreak >= 0)  safe_sprintf(streak, 50, "Streak: %d", data->currentStreak);
+        else safe_sprintf(streak, 50, "Streak: UNSUPPORTED");
+        char position[50];
+        if(data->position >= 0) safe_sprintf(position, 50, "Position: %d", data->position);
+        else safe_sprintf(position, 50, "Position: UNSUPPORTED");
+        char* resArr[6] = {rank, rating, wins, losses, streak, position};
         
-        RGUIReadBox(resultListLoc, buffer);
+        RGUIDrawText(globLoc, data->gameMode, 30);
+        RGUIListView(resultListLoc, resArr, 6, &tierScrollIndex, &tierActive, &tierFocus);
+
 
         if(button == 1){
             state = 0;
