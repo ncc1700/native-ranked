@@ -5,31 +5,12 @@
 #include <stdlib.h>
 #include <yyjson/yyjson.h>
 #include <string.h>
-
+#include <storage.h>
 // a massive mess =(
-
-
-static char currentUserName[USERNAME_SIZE];
-static PlayerGMData gmData[AMOUNT_OF_GAMEMODES];
-static int idx = 0;
-static GlobalInfo gInfo;
-
 
 RankedAPIError FillRankedData(const char* uuid){
     // clear the previous players data
-    safe_sprintf(currentUserName, USERNAME_SIZE, "");
-
-    for(int i = 0; i < AMOUNT_OF_GAMEMODES; i++){
-        safe_sprintf(gmData[i].currentRank, CURRENTRANK_STR_SIZE, "???");
-        safe_sprintf(gmData[i].gameMode, GAMEMODE_STR_SIZE, "???");
-        gmData[i].totalRating = 0;
-        gmData[i].wins = 0;
-        gmData[i].losses = 0;
-        gmData[i].currentStreak = 0;
-        gmData[i].pMatchPlayed = 0;
-        gmData[i].position = 0;
-        gmData[i].played = false;
-    }
+    
     const char urlBase[] = "https://flowpvp.gg/api/ranked/";
     char url[100]; 
     RankedAPIError result = RAPI_SUCCESS;
@@ -60,6 +41,7 @@ RankedAPIError FillRankedData(const char* uuid){
         result = RAPI_USERNAME_NOT_FOUND;
         goto EXIT2;
     }
+    GlobalInfo gInfo = {0};
     yyjson_val* globalEloVal = yyjson_obj_get(root, "globalElo");
     if(globalEloVal == NULL) gInfo.globalElo = 0;
     else gInfo.globalElo = yyjson_get_int(globalEloVal);
@@ -67,18 +49,19 @@ RankedAPIError FillRankedData(const char* uuid){
     yyjson_val* globalPosVal = yyjson_obj_get(root, "globalPosition");
     if(globalPosVal == NULL) gInfo.globalPos = 0;
     else gInfo.globalPos = yyjson_get_int(globalPosVal);
-
+    SetGlobalInfo(&gInfo);
     yyjson_val* rankingsVal = yyjson_obj_get(root, "perLadder");
     if(rankingsVal == NULL){
         DEBUG_FAIL("couldn't find rankings\n");
         result = RAPI_USERNAME_NOT_FOUND;
         goto EXIT2;
     }
-    size_t max;
+    size_t max = 0;
+    int idx = 0;
     yyjson_val* gmName;
     yyjson_val* gm;
     yyjson_obj_foreach(rankingsVal, idx, max, gmName, gm){
-        if(idx >= AMOUNT_OF_GAMEMODES){
+        if(idx >= MAX_AMOUNT_OF_GAMEMODES){
             break;
         }
         if(gmName == NULL || gm == NULL){
@@ -122,22 +105,22 @@ RankedAPIError FillRankedData(const char* uuid){
         int position = 0;
         if(posVal == NULL) position = 0;
         else position = yyjson_get_int(posVal);
-
-        safe_sprintf(gmData[idx].gameMode, GAMEMODE_STR_SIZE, "%s", name);
-        safe_sprintf(gmData[idx].currentRank, CURRENTRANK_STR_SIZE, "%s", currentRank);
+        PlayerGMData gmData = {0};
+        safe_sprintf(gmData.gameMode, GAMEMODE_STR_SIZE, "%s", name);
+        safe_sprintf(gmData.currentRank, CURRENTRANK_STR_SIZE, "%s", currentRank);
         
-        gmData[idx].totalRating = totalRating;
-        gmData[idx].wins = wins;
-        gmData[idx].losses = losses;
-        gmData[idx].currentStreak = currentStreak;
-        gmData[idx].pMatchPlayed = pMatchPlayed;
-        gmData[idx].position = position;
-        gmData[idx].played = true;
-        DEBUG_PASS("%s: (rank = %s, totalRating = %d)\n", gmData[idx].gameMode, gmData[idx].currentRank, gmData[idx].totalRating);
+        gmData.totalRating = totalRating;
+        gmData.wins = wins;
+        gmData.losses = losses;
+        gmData.currentStreak = currentStreak;
+        gmData.pMatchPlayed = pMatchPlayed;
+        gmData.position = position;
+        gmData.played = true;
+        DEBUG_PASS("%s: (rank = %s, totalRating = %d)\n", gmData.gameMode, gmData.currentRank, gmData.totalRating);
+        SetGameMode(idx, &gmData);
     }
-    safe_sprintf(currentUserName, USERNAME_SIZE, "%s", yyjson_get_str(nameVal));
-    
-
+    SetUsername(yyjson_get_str(nameVal));    
+    SetAmountFromSearch(idx);
 EXIT2:
     yyjson_doc_free(doc);
 EXIT1:
@@ -145,19 +128,3 @@ EXIT1:
     return result;
 }
 
-PlayerGMData* GetGameModeFromIndex(int i){
-    if(i >= 9 || i < 0) return NULL;
-    return &gmData[i];
-}
-
-GlobalInfo* GetGlobalInfo(){
-    return &gInfo;
-}
-
-const char* GetUsernameFromSearch(){
-    return (const char*)currentUserName;
-}
-
-int GetAmountFromSearch(){
-    return idx;
-}

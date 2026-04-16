@@ -1,13 +1,13 @@
 #include <tabs/search/result.h>
 #include <tabs/search/searchstate.h>
-#include <network/rankedapi.h>
+#include <storage.h>
 #include <rgui.h>
 #include <stdlib.h>
 #include <nranked.h>
 #include <string.h>
 #include <messagebox.h>
 
-static char* list[AMOUNT_OF_GAMEMODES];
+static char* list[MAX_AMOUNT_OF_GAMEMODES];
 static bool init = false;
 static Texture text;
 static int amount = 0;
@@ -42,7 +42,7 @@ void DrawResult(){
         focus = 0;
         init = true;
     }
-    const char* name = GetUsernameFromSearch();
+    const char* name = GetUsername();
     int nameLen = RGUIMeasureTextWidth(name, 40);
     Vector2 nameLoc = {(Width() - nameLen) / 2, 30};
     Vector2 globLoc = {10 , 80};
