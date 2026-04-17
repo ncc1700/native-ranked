@@ -89,21 +89,27 @@ void DrawResult(){
         char rank[50];
         if(data->currentRank != NULL) safe_sprintf(rank, 50, "Rank: %s", data->currentRank);
         else safe_sprintf(rank, 50, "Rank: UNSUPPORTED");
+
         char rating[50];
         if(data->totalRating >= 0) safe_sprintf(rating, 50, "Rating: %d", data->totalRating);
         else safe_sprintf(rating, 50, "Rating: UNSUPPORTED");
+
         char wins[25];
         if(data->wins >= 0) safe_sprintf(wins, 25, "Wins: %d", data->wins);
         else safe_sprintf(wins, 25, "Wins: UNSUPPORTED");
+
         char losses[25];
         if(data->losses >= 0) safe_sprintf(losses, 25, "Losses: %d", data->losses);
         else safe_sprintf(losses, 25, "Losses: UNSUPPORTED");
+
         char streak[50];
         if(data->currentStreak >= 0)  safe_sprintf(streak, 50, "Streak: %d", data->currentStreak);
         else safe_sprintf(streak, 50, "Streak: UNSUPPORTED");
+
         char position[50];
         if(data->position >= 0) safe_sprintf(position, 50, "Position: %d", data->position);
         else safe_sprintf(position, 50, "Position: UNSUPPORTED");
+        
         char* resArr[6] = {rank, rating, wins, losses, streak, position};
         
         RGUIDrawText(globLoc, data->gameMode, 30);

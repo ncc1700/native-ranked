@@ -26,12 +26,8 @@ void DrawSearch(){
             }
         }
         DEBUG_INFO("Starting search for %s\n", searchBuffer);
-        if(strcmp(searchBuffer, "aximity") == 0){
-            SendAppMessage("nah");
-        } else {
-            SetSearchState(SSTATE_LOADING);
-            StartNetSearchThread(searchBuffer);
-        }   
+        SetSearchState(SSTATE_LOADING);
+        StartNetSearchThread(searchBuffer); 
         
     }
 }
